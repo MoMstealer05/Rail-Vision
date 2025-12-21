@@ -1,0 +1,16 @@
+# Ignore Data and Models
+data/
+models/
+__pycache__/
+*.mp4
+*.avi
+*.jpg
+*.png
+*.pth
+*.pt
+*.engine
+.env
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
