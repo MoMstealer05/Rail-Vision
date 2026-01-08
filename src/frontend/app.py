@@ -1,5 +1,4 @@
 import streamlit as st
-import time
 import random
 from PIL import Image
 
@@ -38,7 +37,7 @@ st.markdown("**Status:** 🟢 System Ready")
 st.divider()
 
 # -------------------------
-# MAIN LAYOUT
+# Main Layout
 # -------------------------
 col1, col2 = st.columns(2)
 
@@ -51,34 +50,42 @@ with col2:
     processed_placeholder = st.empty()
 
 # -------------------------
-# SIDEBAR
+# Sidebar
 # -------------------------
 st.sidebar.title("⚙️ Control Panel")
 
-# ✅ VIDEO INPUT OPTION (THIS IS WHAT YOU WANT)
-st.sidebar.subheader("🎥 Video Input")
+# ✅ INPUT OPTIONS
+st.sidebar.subheader("📂 Input Source")
 
 video_file = st.sidebar.file_uploader(
-    "Upload Wagon Inspection Video",
+    "🎥 Upload Wagon Video",
     type=["mp4", "avi", "mov"]
+)
+
+image_files = st.sidebar.file_uploader(
+    "🖼 Upload Wagon Images",
+    type=["jpg", "jpeg", "png"],
+    accept_multiple_files=True
 )
 
 st.sidebar.divider()
 
+# System stats
 st.sidebar.subheader("System Stats")
 fps_placeholder = st.sidebar.empty()
 gpu_placeholder = st.sidebar.empty()
 
 st.sidebar.divider()
 
+# Defects
 st.sidebar.subheader("Detected Defects")
 defect_placeholder = st.sidebar.empty()
 
 # -------------------------
-# DUMMY IMAGES (for UI)
+# Dummy Images (for feeds)
 # -------------------------
-original_img = Image.new("RGB", (640, 360), "#1f2933")
-processed_img = Image.new("RGB", (640, 360), "#111827")
+dummy_original = Image.new("RGB", (640, 360), "#1f2933")
+dummy_processed = Image.new("RGB", (640, 360), "#111827")
 
 defects = [
     "Door Dent Detected",
@@ -91,23 +98,42 @@ defects = [
 # -------------------------
 # DISPLAY LOGIC
 # -------------------------
+
+# CASE 1: VIDEO UPLOADED
 if video_file is not None:
     st.success("✅ Video uploaded successfully")
 
-    # Show uploaded video (THIS IS INPUT CONFIRMATION)
-    st.subheader("🎬 Uploaded Video Preview")
+    st.subheader("🎬 Video Preview")
     st.video(video_file)
 
-    # Keep your dashboard alive
-    original_placeholder.image(original_img, width=700)
-    processed_placeholder.image(processed_img, width=700)
+    original_placeholder.image(dummy_original, width=700)
+    processed_placeholder.image(dummy_processed, width=700)
 
-    fps_placeholder.metric("FPS", random.randint(42, 48))
-    gpu_placeholder.metric("GPU Usage", f"{random.randint(55, 70)} %")
+# CASE 2: IMAGES UPLOADED
+elif image_files:
+    st.success(f"✅ {len(image_files)} image(s) uploaded")
 
-    defect_placeholder.markdown(
-        "\n".join(f"- ⚠️ {d}" for d in random.sample(defects, 3))
-    )
+    # Show first image as feed
+    img = Image.open(image_files[0])
 
+    original_placeholder.image(img, width=700)
+    processed_placeholder.image(img, width=700)
+
+    st.subheader("🖼 Uploaded Images Preview")
+    st.image(image_files, width=150)
+
+# CASE 3: NOTHING UPLOADED
 else:
-    st.info("👈 Upload a wagon video from the sidebar to start inspection")
+    st.info("👈 Upload a video or images from the sidebar to start inspection")
+    original_placeholder.image(dummy_original, width=700)
+    processed_placeholder.image(dummy_processed, width=700)
+
+# -------------------------
+# Update Stats (always)
+# -------------------------
+fps_placeholder.metric("FPS", random.randint(42, 48))
+gpu_placeholder.metric("GPU Usage", f"{random.randint(55, 70)} %")
+
+defect_placeholder.markdown(
+    "\n".join(f"- ⚠️ {d}" for d in random.sample(defects, 3))
+)
