@@ -5,8 +5,8 @@ import easyocr
 from ultralytics import RTDETR
 
 # --- CONFIGURATION ---
-MASUM_MODEL_PATH = r"D:\Rail-Vision-Root\scripts\runs\detect\rail_vision_transformer_large6\weights\best.pt"
-KAVYA_MODEL_PATH = r"D:\Rail-Vision-Root\models\kavya_deblur_real.pth"
+MASUM_MODEL_PATH = "scripts/runs/detect/rail_vision_transformer_large6/weights/best.pt"
+KAVYA_MODEL_PATH = "models/kavya_deblur_real.pth"
 
 # Global variable to hold the OCR model internally
 # This prevents us from having to pass it around and break app.py
