@@ -1,0 +1,11 @@
+Raw Images
+"
+!pip install roboflow
+
+from roboflow import Roboflow
+rf = Roboflow(api_key="XPBTTDDbao71y12YzBcF")
+project = rf.workspace("wagoncounting").project("wagon-dataset")
+version = project.version(1)
+dataset = version.download("yolov8")
+
+""

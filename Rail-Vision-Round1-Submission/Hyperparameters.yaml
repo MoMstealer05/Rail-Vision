@@ -1,0 +1,41 @@
+# --- RAIL-VISION: RT-DETR DUAL-LIGHT CONFIGURATION ---
+# Optimized for 24/7 Rail Inspection (Day/Night Consistency)
+
+# 1. CORE TRAINING CONTROL
+task: detect         # Object detection task
+mode: train          # Training mode
+model: rtdetr-l.pt   # Large Vision Transformer backbone
+data: wagon_data.yaml # Path to your dataset definition
+epochs: 75           # Sufficient convergence time for Transformers
+batch: 4             # Optimized for RTX 4060 VRAM (8GB)
+imgsz: 640           # Standard resolution for structural detail
+device: 0            # Target GPU (First device)
+amp: True            # Automatic Mixed Precision for 40% speed boost
+
+# 2. OPTIMIZER SETTINGS (Transformer Specific)
+optimizer: AdamW     # Essential for Vision Transformer stability
+lr0: 0.0001          # Initial learning rate
+lrf: 0.01            # Final learning rate fraction
+momentum: 0.937      # Momentum for gradient updates
+weight_decay: 0.0005 # Regularization to prevent overfitting
+warmup_epochs: 5.0   # Stability period before full learning
+warmup_momentum: 0.8 # Initial momentum during warmup
+warmup_bias_lr: 0.1  # Initial bias learning rate
+
+# 3. DUAL-LIGHT AUGMENTATIONS (Day & Night Balance)
+hsv_h: 0.015         # Hue shift (0.0 - 1.0)
+hsv_s: 0.7           # Saturation shift (Recover color in low light)
+hsv_v: 0.6           # Value shift (Brightness: The "Golden Middle")
+degrees: 0.0         # Rotation (Kept 0 for horizontal rail alignment)
+translate: 0.1       # Translation (Handles camera vibration)
+scale: 0.5           # Scaling (Handles varying wagon sizes)
+shear: 0.0           # Shear distortion
+perspective: 0.0     # Perspective shift
+fliplr: 0.5          # Horizontal flip (For bidirectional train movement)
+mosaic: 1.0          # Mosaic augmentation (Critical for small defects)
+mixup: 0.0           # Mixup (Disabled for cleaner feature boundary)
+
+# 4. LOGGING & REPRODUCTION
+project: RailVision_Results
+name: Final_DualLight_Model
+exist_ok: True       # Overwrite existing folder
